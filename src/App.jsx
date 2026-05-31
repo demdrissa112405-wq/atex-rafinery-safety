@@ -850,7 +850,7 @@ export default function App() {
         <nav className="sideMenu">
           <button onClick={() => setActivePage("accueil")} className={activePage === "accueil" ? "active" : ""}>Accueil</button>
           <button onClick={() => setActivePage("dashboard")} className={activePage === "dashboard" ? "active" : ""}>Tableau de bord</button>
-
+          <button onClick={() => setActivePage("identification")} className={activePage === "identification" ? "active" : ""}>Identification</button>
           {courses.map((course) => (
             <button key={course.id} onClick={() => setActivePage(course.id)} className={activePage === course.id ? "active" : ""}>
               {course.menu}
@@ -876,6 +876,7 @@ export default function App() {
       <section className="content">
         {activePage === "accueil" && <Home />}
         {activePage === "dashboard" && <Dashboard />}
+        {activePage === "identification" && (<CandidateForm candidate={candidate}setCandidate={setCandidate}onStart={() => setActivePage("qcm")}/>)}
         {courses.map((course) => activePage === course.id ? <Course key={course.id} course={course} /> : null)}
         {extraSections.map((section) => activePage === section.id ? <ExtraSection key={section.id} section={section} /> : null)}
         {activePage === "qcm" && (
@@ -1093,6 +1094,69 @@ function SafetyDrawing() {
       <div className="barrier">Torche</div><div className="centerShield">SITE</div><div className="barrier">Incendie</div>
       <div className="barrier">Permis</div><div className="barrier">LOTO</div><div className="barrier">REX</div>
     </div>
+  );
+}
+
+function CandidateForm({ candidate, setCandidate, onStart }) {
+  return (
+    <section className="page">
+      <p className="pageLabel">Identification</p>
+
+      <h1>Informations du participant</h1>
+
+      <div className="candidateForm">
+
+        <input
+          placeholder="Nom"
+          value={candidate.nom}
+          onChange={(e) =>
+            setCandidate({ ...candidate, nom: e.target.value })
+          }
+        />
+
+        <input
+          placeholder="Prénom"
+          value={candidate.prenom}
+          onChange={(e) =>
+            setCandidate({ ...candidate, prenom: e.target.value })
+          }
+        />
+
+        <input
+          placeholder="Entreprise"
+          value={candidate.entreprise}
+          onChange={(e) =>
+            setCandidate({
+              ...candidate,
+              entreprise: e.target.value,
+            })
+          }
+        />
+
+        <input
+          placeholder="Fonction"
+          value={candidate.fonction}
+          onChange={(e) =>
+            setCandidate({
+              ...candidate,
+              fonction: e.target.value,
+            })
+          }
+        />
+
+        <button
+          onClick={onStart}
+          disabled={
+            !candidate.nom ||
+            !candidate.prenom ||
+            !candidate.entreprise
+          }
+        >
+          Commencer le QCM
+        </button>
+
+      </div>
+    </section>
   );
 }
 
@@ -1334,3 +1398,10 @@ function Results({ score, total, setSelectedAnswers }) {
     </section>
   );
 }
+
+const [candidate, setCandidate] = useState({
+  nom: "",
+  prenom: "",
+  entreprise: "",
+  fonction: ""
+});
